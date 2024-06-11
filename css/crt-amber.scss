@@ -1,0 +1,131 @@
+* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* From: https://anderse.wordpress.com/2014/04/18/css-and-javascript-retro-terminal-emulator-demo/ */
+  /**
+   * AnderShell - Just a small CSS demo
+   *
+   * Copyright (c) 2011-2013, Anders Evenrud <andersevenrud@gmail.com>
+   * All rights reserved.
+   * 
+   * Redistribution and use in source and binary forms, with or without
+   * modification, are permitted provided that the following conditions are met: 
+   * 
+   * 1. Redistributions of source code must retain the above copyright notice, this
+   *    list of conditions and the following disclaimer. 
+   * 2. Redistributions in binary form must reproduce the above copyright notice,
+   *    this list of conditions and the following disclaimer in the documentation
+   *    and/or other materials provided with the distribution. 
+   * 
+   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+   * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+   * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+   * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+   * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+   * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+   * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+   * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+   * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+   * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+   */
+  
+  /* With simplifications and modifications by Robert Bottomley. */
+  
+  $green-phosphor: #3f3; // P1
+  $amber-phosphor: #ffb000; // P3
+  $white-phosphor: #cce;
+  $phosphor-color: $amber-phosphor;
+  $crt-bg-color: #141414;
+  $crt-margin: 0;
+  $crt-font-size: clamp(6px, 1.5vw, 20px); // these values need to be hand-tuned
+  $crt-line-height: 1.33333;
+  $crt-border-radius: 1.33333em;
+  $crt-char-width: 80; // add 1 if using vertical scroll bars
+  $crt-lines: 24; // number of lines or auto for full height
+  $crt-overflow-y: hidden; // auto or hidden (scroll bars or no)
+  $crt-bezel-width: 1.66667em;
+  $crt-overscan-width: 2.66667em;
+  
+  .crt-bezel {
+    display: inline-block;
+    position: relative;
+    margin: $crt-margin;
+    box-shadow: inset 0 0 1px 0.66667em #000;
+    border-radius: $crt-border-radius;
+    background: #1D1D1D;
+    overflow: hidden;
+    font-size: $crt-font-size;
+    line-height: $crt-line-height;
+  
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2;
+      background: linear-gradient(135deg, rgba(149,149,149,0.5) 0%,rgba(13,13,13,0.55) 19%,rgba(1,1,1,0.64) 50%,rgba(10,10,10,0.69) 69%,rgba(51,51,51,0.73) 84%,rgba(22,22,22,0.76) 93%,rgba(27,27,27,0.78) 100%);
+      opacity: .5;
+    }
+  
+    &:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+      background-color: #ddd;
+      opacity: .1;
+    }
+  }
+  
+  .crt {
+    position: relative;
+    margin: $crt-bezel-width;
+    border-radius: $crt-border-radius;
+    box-shadow: 0 0 1px 3px rgba(10, 10, 10, .7);
+    background: $crt-bg-color;
+    overflow: hidden;
+    z-index: 3;
+  
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      box-shadow: inset 0 0 5px 5px rgba(255, 255, 255, .1);
+      border-radius: $crt-border-radius;
+      background: radial-gradient(ellipse at center, rgba($phosphor-color,0.1) 0%, rgba(255,255,255,0) 100%);
+      z-index: -1;
+    }
+  }
+  
+  .crt-scan-area {
+    width: #{$crt-char-width * 1ch};
+    @if $crt-lines == 'auto' {
+      height: calc(100vh - #{$crt-margin * 2} - #{$crt-bezel-width * 2} - #{$crt-overscan-width * 2});
+    } @else {
+      height: ($crt-lines * 1em * $crt-line-height);
+    }
+    //scrollbar-width: none; // Maybe?
+    margin: $crt-overscan-width;
+    overflow-y: $crt-overflow-y;
+    white-space: pre-wrap;
+    font-family: monospace;
+    color: $phosphor-color;
+    text-shadow: 0 0 1px rgba($phosphor-color, .8);
+  
+    em {
+      color: $crt-bg-color;
+      background-color: $phosphor-color;
+      font-style: normal;
+    }
+  }
+  
