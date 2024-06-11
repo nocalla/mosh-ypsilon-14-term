@@ -1,10 +1,12 @@
 window.onload = function () {
     const elswitch = document.getElementById('switch');
+    elswitch.checked = false
 
     elswitch.addEventListener('change', function (ev) {
         if (elswitch.checked) {
             playSfx('switchsfx')
-            menuHome();
+            enableNavigation()
+            menuHome()
         } /*else {
             document.getElementById('switchsfx').pause();
         }*/
@@ -12,15 +14,12 @@ window.onload = function () {
 }
 
 window.addEventListener('keydown', function (ev) {
-    if (ev.shiftKey) {
-        context.is_admin = true
-    }
-})
 
-window.addEventListener('keyup', function (ev) {
-    if (ev.shiftKey) {
-        context.is_admin = false
+    if (ev.key == 'F1') {
+        toggleAdmin()
     }
+
+    console.log(`is admin: ${context.is_admin}`)
 })
 
 var typewriter_i = 0;
@@ -37,7 +36,22 @@ var context = {
     lock_docking_bay_1: true,
     lock_docking_bay_2: false,
     lock_mineshaft: false,
-    showers: [false, false, false, false, false]
+    showers: [false, false, false, false, false],
+    life_support: true,
+    self_destruct: false,
+    self_destruct_confirm: [true, true, false]
+}
+
+function toggleAdmin() {
+    const admin_el = document.getElementById('admin')
+    context.is_admin = !context.is_admin
+    if (context.is_admin) {
+        admin_el.style.color = '#0f0'
+        admin_el.innerHTML = 'ADMIN'
+    } else {
+        admin_el.style.color = '#000'
+        admin_el.innerHTML = 'GUEST'
+    }
 }
 
 function playSfx(name) {
@@ -70,6 +84,16 @@ function typeWriter() {
     } else if (typewriter_sequence.length > 0) {
         typewriter_sequence.shift()();
     }
+}
+
+function showError(text) {
+    document.getElementById('error').innerHTML = text
+    document.getElementById('error').style.visibility = "visible"
+    disableNavigation()
+    setTimeout(() => {
+        document.getElementById('error').style.visibility = "hidden"
+        enableNavigation()
+    }, 4000)
 }
 
 function createTypeWriterMenu(menu, text, onclick, then = null) {
@@ -105,6 +129,9 @@ function typeWriterSequence(functions) {
 
 // HOME
 const menuHome = function () {
+    if (navigation_enabled === false)
+        return
+
     let menu = document.getElementById('menu');
     menu.innerHTML = ""
 
@@ -142,7 +169,24 @@ const menuDiagnostics = function () {
 
 // HOME -> DIAGNOSTICA -> MAPPA
 const menuMap = function () {
+    if (navigation_enabled === false)
+        return
 
+    let img = document.createElement('img')
+    img.src = 'img/map.png'
+    img.classList.add('stationmap')
+
+    let menu = document.getElementById('menu');
+    menu.innerHTML = ``
+    menu.appendChild(img)    
+
+    setTimeout(function () {
+        disableNavigation();
+        typeWriterSequence([
+            () => { createTypeWriterMenu(menu, "< INDIETRO", menuDiagnostics) },
+            enableNavigation
+        ])
+    }, 200);    
 }
 
 // HOME -> DIAGNOSTICA -> STATO
@@ -185,7 +229,7 @@ const menuSchedule = function () {
 </tr>
 <tr>
   <td>666-07-02</td>
-  <td>IMV TEMPEST</td>
+  <td>IMV THE TEMPEST</td>
   <td>RIFORNIM.</td>
   <td>BAIA 2</td>
   <td>ATTRAC.</td>
@@ -283,22 +327,25 @@ const getAirlockStatus = function (flag) {
 }
 
 const toggleAirlock1 = function (flag) {
-    context.lock_docking_bay_1 = !context.lock_docking_bay_1
-    menuAirlocks()
+    //context.lock_docking_bay_1 = !context.lock_docking_bay_1
+    //menuAirlocks()
+    showError("BLOCCO MANUALE IN FUNZIONE. DISINSERIRE BLOCCO MANUALE.")
 }
 
 const toggleAirlock2 = function (flag) {
-    context.lock_docking_bay_2 = !context.lock_docking_bay_2
+    context.lock_docking_bay_2 = !context.lock_docking_bay_2    
+    playSfx('airlocksfx')
     menuAirlocks()
 }
 
 const toggleMineshaft = function (flag) {
     context.lock_mineshaft = !context.lock_mineshaft
+    playSfx('airlocksfx')
     menuAirlocks()
 }
 
 // HOME -> CONTROLLI -> PORTELLONI
-const menuAirlocks = function() {
+const menuAirlocks = function () {
     if (navigation_enabled === false)
         return
     let menu = document.getElementById('menu');
@@ -316,14 +363,15 @@ const menuAirlocks = function() {
     }, 200);
 }
 
-const getShowerStatus = function (flag) {
+const getOnOffStatus = function (flag) {
     return flag ? "ON" : "OFF"
 }
 
 const toggleShower = function (index) {
-    if (index === 4 ) {
+    if (index === 4) {
         // questa doccia non funziona
-        playSfx('errorsfx').play();
+        showError("[DOCCIA 5 FUORI SERVIZIO.]")
+        playSfx('errorsfx').play()
     } else {
         context.showers[index] = !context.showers[index]
         menuShowers()
@@ -331,7 +379,7 @@ const toggleShower = function (index) {
 }
 
 // HOME -> CONTROLLI -> DOCCE
-const menuShowers = function() {
+const menuShowers = function () {
     if (navigation_enabled === false)
         return
     let menu = document.getElementById('menu');
@@ -339,8 +387,8 @@ const menuShowers = function() {
 
     let showers = context.showers.map(
         (v, i) => {
-            return () => createTypeWriterMenu(menu, `- DOCCIA ${i+1} [${getShowerStatus(v)}]`, ()=>toggleShower(i))
-        } 
+            return () => createTypeWriterMenu(menu, `- DOCCIA ${i + 1} [${getOnOffStatus(v)}]`, () => toggleShower(i))
+        }
     )
 
     showers.push(() => { createTypeWriterMenu(menu, "< INDIETRO", menuControls) })
@@ -354,13 +402,146 @@ const menuShowers = function() {
 
 // HOME -> CONTROLLI -> SISTEMA [A]
 // Questo menu' necessita dei permessi di admin
-const menuSystem = function() {
+const menuSystem = function () {
     if (navigation_enabled === false)
         return
     if (context.is_admin === false) {
+        showError("[ACCESSO VIETATO, RICHIESTO BADGE AMMINISTRATORE]")
         playSfx('errorsfx')
         return
     }
+
+    let menu = document.getElementById('menu');
+    menu.innerHTML = ""
+
+    setTimeout(function () {
+        disableNavigation();
+        typeWriterSequence([
+            () => { createTypeWriterText(menu, `[ACCESSO CONSENTITO, BENTORNATA, SONYA]`, `color: green`) },
+            () => { createTypeWriterMenu(menu, `- SUPPORTO VITALE`, menuLifeSupport) },
+            () => { createTypeWriterMenu(menu, `- AUTO DISTRUZIONE`, menuSelfDestruct) },
+            () => { createTypeWriterMenu(menu, "< INDIETRO", menuControls) },
+            enableNavigation
+        ])
+    }, 200);
+}
+
+// HOME -> CONTROLLI -> SISTEMA [A] -> SUPPORTO VITALE
+const menuLifeSupport = function () {
+    if (navigation_enabled === false)
+        return
+
+    if (context.is_admin === false) {
+        showError("[ACCESSO VIETATO, RICHIESTO BADGE AMMINISTRATORE]")
+        playSfx('errorsfx')
+        return
+    }
+
+    let menu = document.getElementById('menu');
+    menu.innerHTML = ""
+
+    setTimeout(function () {
+        disableNavigation();
+        typeWriterSequence([
+            () => { createTypeWriterMenu(menu, `- SUPPORTO VITALE [${getOnOffStatus(context.life_support)}]`, menuDisableLifeSupport) },
+            () => { createTypeWriterMenu(menu, "< INDIETRO", menuControls) },
+            enableNavigation
+        ])
+    }, 200);
+}
+
+const menuDisableLifeSupport = function () {
+    if (navigation_enabled === false)
+        return
+
+    if (context.is_admin === false) {
+        showError("[ACCESSO VIETATO, RICHIESTO BADGE AMMINISTRATORE]")
+        playSfx('errorsfx')
+        return
+    }
+
+    if (context.life_support === true) {
+
+        let menu = document.getElementById('menu');
+        menu.innerHTML = ""
+
+        setTimeout(function () {
+            disableNavigation();
+            typeWriterSequence([
+                () => { createTypeWriterText(menu, 
+                    `[ATTENZIONE, DISABILITARE IL SUPPORTO VITALE SENZA AUTORIZZAZIONE È CONTRO LE POLICY DI SICUREZZA. ASSICURATEVI DI COMPILARE IL MODULO 077-X24 IN OGNI SUO CAMPO E INVIARLO AL SUPERVISORE.]`, 
+                    `color: red`)
+                     },
+                () => { createTypeWriterMenu(menu, "CONFERMA", () => {context.life_support = false; menuLifeSupport()}) },
+                () => { createTypeWriterMenu(menu, "< INDIETRO", menuControls) },
+                enableNavigation
+            ])
+        }, 200);
+    } else {
+        context.life_support = true
+        menuLifeSupport()
+    }
+}
+
+function getConfirmationStr(flag) {
+    return flag ? "x" : " "
+}
+
+function toggleSelfDestructConfirm(index) {
+    context.self_destruct_confirm[index] = !context.self_destruct_confirm[index]
+    menuSelfDestruct()
+}
+
+// HOME -> CONTROLLI -> SISTEMA [A] -> AUTO DISTRUZIONE
+const menuSelfDestruct = function () {
+    if (navigation_enabled === false)
+        return
+
+    if (context.is_admin === false) {
+        showError("[ACCESSO VIETATO, RICHIESTO BADGE AMMINISTRATORE]")
+        playSfx('errorsfx')
+        return
+    }
+
+    let menu = document.getElementById('menu');
+    menu.innerHTML = ""    
+
+    if (context.self_destruct_confirm.every((x) => x === true)) {
+
+        setTimeout(function () {
+            disableNavigation();
+            typeWriterSequence([
+                () => { createTypeWriterText(menu, 
+                    `[SEQUENZA AUTO DISTRUZIONE ATTIVATA. LA STAZIONE DETONERÀ IN 10 MINUTI. ABBANDONARE LA STAZIONE.]`, 
+                    `color: red`)
+                        },
+                () => { createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[0])}]`, () => toggleSelfDestructConfirm(0)) },
+                () => { createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[1])}]`, () => toggleSelfDestructConfirm(1)) },
+                () => { createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[2])}]`, () => toggleSelfDestructConfirm(2)) },
+                () => { createTypeWriterMenu(menu, "< INDIETRO", menuControls) },
+                enableNavigation
+            ])
+            playSfx('selfdestructsfx')
+        }, 200);
+
+        return
+    }
+
+    setTimeout(function () {
+        disableNavigation();
+        typeWriterSequence([
+            () => { createTypeWriterText(menu, 
+                `[ATTENZIONE, IL PROCESSO DI AUTODISTRUZIONE DETONERÀ LA STAZIONE ENTRO 10 MINUTI. SE CONFERMATO IL PROCESSO DIVENTERÀ IRREVERSIBILE DOPO 5 MINUTI.]`, 
+                `color: red`)
+                    },
+            () => { createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[0])}]`, () => toggleSelfDestructConfirm(0)) },
+            () => { createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[1])}]`, () => toggleSelfDestructConfirm(1)) },
+            () => { createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[2])}]`, () => toggleSelfDestructConfirm(2)) },
+            () => { createTypeWriterMenu(menu, "< INDIETRO", menuControls) },
+            enableNavigation
+        ])
+    }, 200);
+    
 }
 
 // HOME -> PERSONALE
@@ -431,13 +612,22 @@ const menuRoster = function () {
     createTypeWriterMenu(menu, "< INDIETRO", menuHome)
 }
 
+// HOME -> COMUNICAZIONI
 const menuComms = function () {
     if (navigation_enabled === false)
         return
     let menu = document.getElementById('menu');
-    menu.innerHTML = `
-        <li class="typewriter">- CONTROLLI<</li>
-        <li class="typewriter"><a href="#" onclick="menuHome()">&lt; INDIETRO</a></li>
-    `;
+    menu.innerHTML = ``
+
+    setTimeout(function () {
+        disableNavigation();
+        typeWriterSequence([
+            () => { createTypeWriterText(menu, `SCANSIONE NAVI IN PROSSIMITÀ...`)},
+            () => { createTypeWriterMenu(menu, `- CONTATTO RSV THE HERACLES`) },
+            () => { createTypeWriterMenu(menu, `- CONTATTO IMV THE TEMPEST`) },
+            () => { createTypeWriterMenu(menu, "< INDIETRO", menuHome) },
+            enableNavigation
+        ])
+    }, 200);
 }
 
