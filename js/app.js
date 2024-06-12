@@ -27,14 +27,19 @@ window.onload = function () {
             await menuHome()
         }
     }, false);
+
+    const eladmin = document.getElementById('admin')
+    eladmin.addEventListener('click', function(ev) {
+        toggleAdmin()
+        console.log(`is admin: ${context.is_admin}`)
+    })
 }
 
 window.addEventListener('keydown', function (ev) {
     if (ev.key == 'F6') {
         toggleAdmin()
-    }
-
-    console.log(`is admin: ${context.is_admin}`)
+        console.log(`is admin: ${context.is_admin}`)
+    }   
 })
 
 
@@ -256,10 +261,21 @@ const toggleAdmin = function () {
         admin_el.style.color = '#000'
         admin_el.innerHTML = 'GUEST'
     }
+
+    navigator.vibrate(200); // vibrate for 200ms
 }
 
 const toggleSelfDestructConfirm = function (index) {
     context.self_destruct_confirm[index] = !context.self_destruct_confirm[index]
+
+    if (isSelfDestructActivated()) {
+        navigator.vibrate([
+            100, 30, 100, 30, 100, 30, 200, 30, 200, 30, 200, 30, 100, 30, 100, 30, 100,
+          ]); // Vibrate 'SOS' in Morse.        
+    } else {
+        navigator.vibrate(200); // vibrate for 200ms
+    }
+
     menuSelfDestruct()
 }
 //
