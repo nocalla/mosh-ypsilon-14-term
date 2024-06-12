@@ -320,7 +320,8 @@ table th, table td {
 }
 
 .stationmap {
-  max-width: 50%;
+  max-width: 45%;
+  margin-left: 25%;
 }
 
 /*# sourceMappingURL=crt-pure.css.map */
