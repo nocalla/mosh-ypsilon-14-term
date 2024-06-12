@@ -5,6 +5,7 @@ $amber-phosphor: #ffb000; // P3
 $white-phosphor: #cce;
 $phosphor-color: $white-phosphor;
 $crt-bg-color: #000;
+$crt-max-size: 100rem;
 
 $scan-width: .2rem;
 $scan-crt: true;
@@ -13,6 +14,7 @@ $scan-color: rgba(#000, .25);
 $scan-z-index: 2147483648;
 $scan-moving-line: true;
 $scan-opacity: .75;
+$text-shadow-magnitude: .04em;
 
 @mixin scan-moving($scan-moving-line) {
     @if $scan-moving-line ==true {
@@ -226,16 +228,16 @@ body {
     font-family: 'VT323', 'Courier New', monospace;
     font-weight: normal;
     text-shadow:
-        0 0 .08em rgba($phosphor-color, 1),
-        -.08em 0 .08em rgba(#0ff, 1),
-        .08em 0 .08em rgba(#f0f, 1);
+        0 0 $text-shadow-magnitude rgba($phosphor-color, 1),
+        -$text-shadow-magnitude 0 $text-shadow-magnitude rgba(#0ff, 1),
+        $text-shadow-magnitude 0 $text-shadow-magnitude rgba(#f0f, 1);
 }
 
 .container {
     display: flex;
     flex-direction: column-reverse;
     width: 100%;
-    max-width: 80rem;
+    max-width: $crt-max-size;
     margin: 0 auto;
 }
 
@@ -419,16 +421,20 @@ h1 {
     }
 }
 
-table,
-th,
-td {
+table {
     border: 1px solid $phosphor-color;
-    font-size: 80%;
+    font-size: 90%;
+
+    th, td {
+        border: 1px solid $phosphor-color;
+        padding-left: .3em;
+        padding-right: .3em;
+    }
 }
 
 #error {
     color: red;
-    font-size: 80%;
+    font-size: 85%;
     visibility: hidden;
 }
 
@@ -442,5 +448,4 @@ td {
 
 .stationmap {
     max-width: 50%;
-    //max-height: 50%;
 }
