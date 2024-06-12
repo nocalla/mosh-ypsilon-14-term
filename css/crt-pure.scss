@@ -217,6 +217,7 @@ $text-shadow-magnitude: .04em;
 
 html {
     font-size: 62.5%;
+    min-height: 100%;
 }
 
 body {
@@ -306,7 +307,13 @@ body {
     }
 
     footer {
-        padding-top: 1em;
+        //padding-top: 1em;
+        position: absolute;
+        left: 2em;
+        bottom: 0;
+        height: 100px;
+        width: 100%;
+        overflow: hidden;        
     }
 
     @media (min-width: 30rem) {

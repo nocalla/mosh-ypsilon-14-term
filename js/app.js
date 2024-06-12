@@ -11,7 +11,8 @@ import {
     getOnOffStatus,
     showError,
     isSelfDestructActivated,
-    isLifeSupportOff
+    isLifeSupportOff,
+    requestFullscreen
 } from './utils.js'
 import { createTypeWriterMenu, createTypeWriterText } from './typewriter.js';
 import { scheduleData, rosterData } from './data.js';
@@ -23,6 +24,7 @@ window.onload = function () {
     elswitch.addEventListener('change', async function (ev) {
         if (elswitch.checked) {
             playSfx('switchsfx')
+            // requestFullscreen()
             await delay(1000)
             await menuHome()
         }

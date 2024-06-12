@@ -27,7 +27,7 @@ const stopSfx = function (name) {
 }
 
 const getAirlockStatus = function (flag) {
-    return flag ? "CHIUSO" : "APERTO"
+    return flag ? "BLOCCATO" : "SBLOCCATO"
 }
 
 const getOnOffStatus = function (flag) {
@@ -61,6 +61,13 @@ const isLifeSupportOff = function() {
     return context.life_support === false
 }
 
+const requestFullscreen = function() {
+    const theApp = document.getElementById("theApp")
+    if (theApp && theApp.requestFullscreen) {
+        theApp.requestFullscreen()
+    }
+}
+
 export {
     delay,
     getEmptyMenu,
@@ -73,5 +80,6 @@ export {
     clearError,
     getConfirmationStr,
     isSelfDestructActivated,
-    isLifeSupportOff
+    isLifeSupportOff,
+    requestFullscreen
 }
