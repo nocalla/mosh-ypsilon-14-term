@@ -5,7 +5,7 @@ $amber-phosphor: #ffb000; // P3
 $white-phosphor: #cce;
 $phosphor-color: $white-phosphor;
 $crt-bg-color: #000;
-$crt-max-size: 100rem;
+$crt-max-size: 86rem;
 
 $scan-width: .2rem;
 $scan-crt: true;
@@ -387,50 +387,9 @@ h1 {
     }
 }
 
-.typewriter {
-    //color: #fff;
-    //font-family: monospace;
-    overflow: hidden;
-    /* Ensures the content is not revealed until the animation */
-    //border-right: .12em solid $phosphor-color; /* The typwriter cursor */
-    white-space: nowrap;
-    /* Keeps the content on a single line */
-    margin: 0 auto;
-    /* Gives that scrolling effect as the typing happens */
-    letter-spacing: .15em;
-    /* Adjust as needed */
-    animation:
-        typing 2s steps(30, end),
-        //blink-caret .5s step-end infinite;
-}
-
-/* The typing effect */
-@keyframes typing {
-    from {
-        width: 0
-    }
-
-    to {
-        width: 100%
-    }
-}
-
-/* The typewriter cursor effect */
-@keyframes blink-caret {
-
-    from,
-    to {
-        border-color: transparent
-    }
-
-    50% {
-        border-color: $phosphor-color
-    }
-}
-
 table {
     border: 1px solid $phosphor-color;
-    font-size: 90%;
+    font-size: 75%;
 
     th, td {
         border: 1px solid $phosphor-color;
@@ -451,6 +410,10 @@ table {
     .active {
         color: #0f0;
     }
+
+    position: absolute;
+    top: 2%;
+    right: 10%
 }
 
 .stationmap {

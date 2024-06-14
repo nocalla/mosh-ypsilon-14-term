@@ -44,6 +44,10 @@ window.addEventListener('keydown', function (ev) {
     }
 })
 
+window.addEventListener('click', function (ev) {
+    if (!this.document.fullscreenElement)
+        requestFullscreen()
+})
 
 // HOME
 const menuHome = async function () {
