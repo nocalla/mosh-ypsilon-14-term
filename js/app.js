@@ -31,7 +31,7 @@ window.onload = function () {
     }, false);
 
     const eladmin = document.getElementById('admin')
-    eladmin.addEventListener('click', function(ev) {
+    eladmin.addEventListener('click', function (ev) {
         toggleAdmin()
         console.log(`is admin: ${context.is_admin}`)
     })
@@ -41,7 +41,7 @@ window.addEventListener('keydown', function (ev) {
     if (ev.key == 'F6') {
         toggleAdmin()
         console.log(`is admin: ${context.is_admin}`)
-    }   
+    }
 })
 
 
@@ -81,18 +81,18 @@ const menuMap = async function () {
 const menuStatus = async function () {
     await navGuard(async () => {
         const menu = getEmptyMenu()
-        await createTypeWriterText(menu, "SYSTEM CHECK...", `font-size: 90%`)
-        await createTypeWriterText(menu, "ATTENZIONE: FILTRI DELL'ARIA SOSTITUITI 455 GIORNI FA", `color: yellow; font-size: 90%`)
-        await createTypeWriterText(menu, "ATTENZIONE: DOCCIA N.5 FUORI SERVIZIO DA 1 GIORNO", `color: red; font-size: 90%`)
-        await createTypeWriterText(menu, "ATTENZIONE: ULTIMA MANUTENZIONE ASCENSORE MINIERA 455 GIORNI FA", `color: yellow; font-size: 90%`)
-        await createTypeWriterText(menu, "ATTENZIONE: FLUSSO ARIA 82% (NON OTTIMO: SOSTITUIRE FILTRI E CONTROLLARE OSTRUZIONI CONDOTTI)", `color: red; font-size: 90%`)
+        await createTypeWriterText(menu, "SYSTEM CHECK...", { style: `font-size: 90%` })
+        await createTypeWriterText(menu, "ATTENZIONE: FILTRI DELL'ARIA SOSTITUITI 455 GIORNI FA", { style: `color: yellow; font-size: 90%` })
+        await createTypeWriterText(menu, "ATTENZIONE: DOCCIA N.5 FUORI SERVIZIO DA 1 GIORNO", { style: `color: red; font-size: 90%` })
+        await createTypeWriterText(menu, "ATTENZIONE: ULTIMA MANUTENZIONE ASCENSORE MINIERA 455 GIORNI FA", { style: `color: yellow; font-size: 90%` })
+        await createTypeWriterText(menu, "ATTENZIONE: FLUSSO ARIA 82% (NON OTTIMO: SOSTITUIRE FILTRI E CONTROLLARE OSTRUZIONI CONDOTTI)", { style: `color: red; font-size: 90%` })
         if (!isLifeSupportOff() && !isSelfDestructActivated()) {
-            await createTypeWriterText(menu, "[TUTTI I SISTEMI OPERANO IN CONDIZIONI ACCETTABILI]", `font-size: 90%`)
+            await createTypeWriterText(menu, "[TUTTI I SISTEMI OPERANO IN CONDIZIONI ACCETTABILI]", { style: `font-size: 90%` })
         } else {
             if (isLifeSupportOff())
-                await createTypeWriterText(menu, "ATTENZIONE: SUPPORTO VITALE DISATTIVATO!", `color: red; font-size: 90%`)
+                await createTypeWriterText(menu, "ATTENZIONE: SUPPORTO VITALE DISATTIVATO!", { style: `color: red; font-size: 90%` })
             if (isSelfDestructActivated())
-                await createTypeWriterText(menu, "ATTENZIONE: SEQUENZA DI AUTO DISTRUZIONE ATTIVATA!", `color: red; font-size: 90%`)            
+                await createTypeWriterText(menu, "ATTENZIONE: SEQUENZA DI AUTO DISTRUZIONE ATTIVATA!", { style: `color: red; font-size: 90%` })
         }
         await createTypeWriterMenu(menu, "< INDIETRO", menuDiagnostics)
     })
@@ -146,7 +146,7 @@ const menuShowers = async function () {
 const menuSystem = async function () {
     await navGuardAdmin(async () => {
         const menu = getEmptyMenu()
-        await createTypeWriterText(menu, `[ACCESSO CONSENTITO, BENTORNATA, SONYA]`, `color: green`)
+        await createTypeWriterText(menu, `[ACCESSO CONSENTITO, BENTORNATA, SONYA]`, { style: `color: green` })
         await createTypeWriterMenu(menu, `- SUPPORTO VITALE`, menuLifeSupport)
         await createTypeWriterMenu(menu, `- AUTO DISTRUZIONE`, menuSelfDestruct)
         await createTypeWriterMenu(menu, "< INDIETRO", menuControls)
@@ -158,8 +158,8 @@ const menuLifeSupport = async function () {
     await navGuardAdmin(async () => {
         const menu = getEmptyMenu()
         if (isLifeSupportOff())
-            await createTypeWriterText(menu, `[ATTENZIONE: SUPPORTO VITALE DISATTIVATO]`, `color: red`)
-            
+            await createTypeWriterText(menu, `[ATTENZIONE: SUPPORTO VITALE DISATTIVATO]`, { style: `color: red` })
+
         await createTypeWriterMenu(menu, `- SUPPORTO VITALE [${getOnOffStatus(context.life_support)}]`, menuDisableLifeSupport)
         await createTypeWriterMenu(menu, "< INDIETRO", menuControls)
     })
@@ -172,7 +172,7 @@ const menuDisableLifeSupport = async function () {
             await createTypeWriterText(
                 menu,
                 `[ATTENZIONE, DISABILITARE IL SUPPORTO VITALE SENZA AUTORIZZAZIONE È CONTRO LE POLICY DI SICUREZZA. ASSICURATEVI DI COMPILARE IL MODULO 077-X24 IN OGNI SUO CAMPO E INVIARLO AL SUPERVISORE.]`,
-                `color: red`)
+                { style: `color: red` })
             await createTypeWriterMenu(menu, "- CONFERMA", () => { context.life_support = false; menuLifeSupport() })
             await createTypeWriterMenu(menu, "< INDIETRO", menuControls)
         } else {
@@ -189,7 +189,7 @@ const menuSelfDestruct = async function () {
         if (isSelfDestructActivated()) {
             await createTypeWriterText(menu,
                 `[SEQUENZA AUTO DISTRUZIONE ATTIVATA. LA STAZIONE DETONERÀ IN 10 MINUTI. ABBANDONARE LA STAZIONE.]`,
-                `color: red`)
+                { style: `color: red` })
             await createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[0])}]`, () => toggleSelfDestructConfirm(0))
             await createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[1])}]`, () => toggleSelfDestructConfirm(1))
             await createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[2])}]`, () => toggleSelfDestructConfirm(2))
@@ -197,7 +197,7 @@ const menuSelfDestruct = async function () {
         } else {
             await createTypeWriterText(menu,
                 `[ATTENZIONE, IL PROCESSO DI AUTODISTRUZIONE DETONERÀ LA STAZIONE DOPO 10 MINUTI DALL'ATTIVAZIONE. SE CONFERMATO IL PROCESSO DIVENTERÀ IRREVERSIBILE DOPO 5 MINUTI.]`,
-                `color: red`)
+                { style: `color: red` })
             await createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[0])}]`, () => toggleSelfDestructConfirm(0))
             await createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[1])}]`, () => toggleSelfDestructConfirm(1))
             await createTypeWriterMenu(menu, `CONFERMA [${getConfirmationStr(context.self_destruct_confirm[2])}]`, () => toggleSelfDestructConfirm(2))
@@ -220,8 +220,25 @@ const menuComms = async function () {
     await navGuard(async () => {
         const menu = getEmptyMenu()
         await createTypeWriterText(menu, `SCANSIONE NAVI IN PROSSIMITÀ...`)
-        await createTypeWriterMenu(menu, `- CONTATTO RSV THE HERACLES`)
-        await createTypeWriterMenu(menu, `- CONTATTO IMV THE TEMPEST`)
+        await createTypeWriterMenu(menu, `- CONTATTO RSV THE HERACLES`, () => menuContact('RSV THE HERACLES', false))
+        await createTypeWriterMenu(menu, `- CONTATTO IMV THE TEMPEST`, () => menuContact('IMV THE TEMPEST', true))
+        await createTypeWriterMenu(menu, "< INDIETRO", menuHome)
+    })
+}
+
+// HOME -> COMUNICAZIONI -> <NAVE>
+const menuContact = async function (ship, success) {
+    await navGuard(async () => {
+        const menu = getEmptyMenu()
+        await createTypeWriterText(menu, `INVIO SEGNALE DI CONTATTO A ${ship}...`)
+        await createTypeWriterText(menu, `...`, { speed: 500 })
+        await createTypeWriterText(menu, `...`, { speed: 500 })
+        if (success) {
+            await createTypeWriterText(menu, `CANALE APERTO`, { style: `color: green` })
+        } else {
+            playSfx("errorsfx")
+            await createTypeWriterText(menu, `CONTATTO NON RIUSCITO`, { style: `color: red` })
+        }
         await createTypeWriterMenu(menu, "< INDIETRO", menuHome)
     })
 }
@@ -273,7 +290,7 @@ const toggleSelfDestructConfirm = function (index) {
     if (isSelfDestructActivated()) {
         navigator.vibrate([
             100, 30, 100, 30, 100, 30, 200, 30, 200, 30, 200, 30, 100, 30, 100, 30, 100,
-          ]); // Vibrate 'SOS' in Morse.        
+        ]); // Vibrate 'SOS' in Morse.        
     } else {
         navigator.vibrate(200); // vibrate for 200ms
     }

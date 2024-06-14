@@ -1,10 +1,10 @@
 import { delay } from './utils.js'
 
 class Typewriter {
-    constructor(element, text, speed = 30) {
+    constructor(element, text, speed) {
         this.element = element;
         this.text = text;
-        this.speed = speed;
+        this.speed = speed ?? 30;
     }
 
     async exec() {
@@ -27,12 +27,13 @@ const createTypeWriterMenu = async function (menu, text, onclick) {
     await tw.exec()
 }
 
-const createTypeWriterText = async function (menu, text, style) {
+const createTypeWriterText = async function (menu, text, {style = null, speed = 30}={}) {
     let li = document.createElement('li')
-    li.style = style
+    if (style)
+        li.style = style
     menu.appendChild(li)
 
-    const tw = new Typewriter(li, text)
+    const tw = new Typewriter(li, text, speed)
     await tw.exec()
 }
 
