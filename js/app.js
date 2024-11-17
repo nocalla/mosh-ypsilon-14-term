@@ -18,7 +18,8 @@ import { createTypeWriterMenu, createTypeWriterText } from './typewriter.js';
 import { scheduleData, rosterData } from './data.js';
 import { loadTranslations, getString } from "tranlsations.js"
 
-window.onload = function () {
+window.onload = async function () {
+    await loadTranslations('en'); // Load English translations
     const elswitch = document.getElementById('switch');
     elswitch.checked = false
 
@@ -52,16 +53,16 @@ window.addEventListener('click', function (ev) {
 
 // HOME
 const menuHome = async function () {
-    const lang = "lang/it.js"
     await navGuard(async () => {
-        const menu = getEmptyMenu()
-        await createTypeWriterMenu(menu, lang.diagnostics, menuDiagnostics)
-        await createTypeWriterMenu(menu, lang.logs, menuSchedule)
-        await createTypeWriterMenu(menu, lang.controls, menuControls)
-        await createTypeWriterMenu(menu, lang.personnel, menuRoster)
-        await createTypeWriterMenu(menu, lang.communications, menuComms)
-    })
+        const menu = getEmptyMenu();
+        await createTypeWriterMenu(menu, getString("menu_diagnostics"), menuDiagnostics);
+        await createTypeWriterMenu(menu, getString("menu_logs"), menuSchedule);
+        await createTypeWriterMenu(menu, getString("menu_controls"), menuControls);
+        await createTypeWriterMenu(menu, getString("menu_personnel"), menuRoster);
+        await createTypeWriterMenu(menu, getString("menu_communications"), menuComms);
+    });
 }
+
 
 // HOME -> DIAGNOSTICA
 const menuDiagnostics = async function () {

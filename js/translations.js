@@ -1,21 +1,10 @@
-// sourced from: https://centus.com/blog/javascript-localization
-// This object will store our translations
 let translations = {};
 
-// This function fetches the translation file
-async function loadTranslations(locale) {
-    try {
-        const translations = await import(`./lang/${locale}.js`);
-        return translations.default;
-    } catch (error) {
-        console.error('Error loading translation file:', error);
-        const defaultTranslations = await import('./lang/en.js');
-        return defaultTranslations.default;
-    }
+export async function loadTranslations(locale) {
+    const response = await fetch(`./translations/${locale}.json`);
+    translations = await response.json();
 }
 
-async function getString(str_key) {
-
+export function getString(key) {
+    return translations[key] || key;
 }
-
-export { loadTranslations, getString }
