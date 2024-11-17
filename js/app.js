@@ -16,6 +16,7 @@ import {
 } from './utils.js'
 import { createTypeWriterMenu, createTypeWriterText } from './typewriter.js';
 import { scheduleData, rosterData } from './data.js';
+import { loadTranslations, getString } from "tranlsations.js"
 
 window.onload = function () {
     const elswitch = document.getElementById('switch');
@@ -35,6 +36,8 @@ window.onload = function () {
         toggleAdmin()
         console.log(`is admin: ${context.is_admin}`)
     })
+
+    const lang = loadTranslations("it")
 }
 
 window.addEventListener('keydown', function (ev) {
@@ -53,11 +56,11 @@ window.addEventListener('click', function (ev) {
 const menuHome = async function () {
     await navGuard(async () => {
         const menu = getEmptyMenu()
-        await createTypeWriterMenu(menu, "- DIAGNOSTICA", menuDiagnostics)
-        await createTypeWriterMenu(menu, "- REGISTRO", menuSchedule)
-        await createTypeWriterMenu(menu, "- CONTROLLI", menuControls)
-        await createTypeWriterMenu(menu, "- PERSONALE", menuRoster)
-        await createTypeWriterMenu(menu, "- COMUNICAZIONI", menuComms)
+        await createTypeWriterMenu(menu, lang.diagnostics, menuDiagnostics)
+        await createTypeWriterMenu(menu, lang.logs, menuSchedule)
+        await createTypeWriterMenu(menu, lang.controls, menuControls)
+        await createTypeWriterMenu(menu, lang.personnel, menuRoster)
+        await createTypeWriterMenu(menu, lang.communications, menuComms)
     })
 }
 
@@ -294,7 +297,7 @@ const toggleSelfDestructConfirm = function (index) {
     if (isSelfDestructActivated()) {
         navigator.vibrate([
             100, 30, 100, 30, 100, 30, 200, 30, 200, 30, 200, 30, 100, 30, 100, 30, 100,
-        ]); // Vibrate 'SOS' in Morse.        
+        ]); // Vibrate 'SOS' in Morse.
     } else {
         navigator.vibrate(200); // vibrate for 200ms
     }
