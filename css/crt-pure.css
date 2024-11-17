@@ -292,6 +292,16 @@ table th, table td {
   color: #0f0;
 }
 
+#locale {
+  color: #000;
+  position: absolute;
+  top: 2%;
+  right: 20%;
+}
+#locale .active {
+  color: #0f0;
+}
+
 .stationmap {
   max-width: 45%;
   margin-left: 25%;

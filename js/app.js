@@ -37,7 +37,7 @@ window.onload = function () {
         console.log(`is admin: ${context.is_admin}`)
     })
 
-    const lang = loadTranslations("it")
+
 }
 
 window.addEventListener('keydown', function (ev) {
@@ -54,6 +54,7 @@ window.addEventListener('click', function (ev) {
 
 // HOME
 const menuHome = async function () {
+    const lang = loadTranslations("it")
     await navGuard(async () => {
         const menu = getEmptyMenu()
         await createTypeWriterMenu(menu, lang.diagnostics, menuDiagnostics)
