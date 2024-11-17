@@ -36,8 +36,6 @@ window.onload = function () {
         toggleAdmin()
         console.log(`is admin: ${context.is_admin}`)
     })
-
-
 }
 
 window.addEventListener('keydown', function (ev) {
@@ -54,7 +52,7 @@ window.addEventListener('click', function (ev) {
 
 // HOME
 const menuHome = async function () {
-    const lang = loadTranslations("it")
+    const lang = "lang/it.js"
     await navGuard(async () => {
         const menu = getEmptyMenu()
         await createTypeWriterMenu(menu, lang.diagnostics, menuDiagnostics)
